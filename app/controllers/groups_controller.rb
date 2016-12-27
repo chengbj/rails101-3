@@ -41,6 +41,33 @@ end
     flash[:alert]= "Group deleted"
     redirect_to groups_path
   end
+
+  def join
+    @group = Group.find(params[:id])
+
+    if !current_user.is_member_of?(@group)
+      current_user.join!(@group)
+      flash[:notice]= "Join This Group Successfully!"
+    else
+      flash[:warning]= "You are already the member."
+    end
+
+    redirect_to group_path(@group)
+  end
+
+  def quit
+    @group =Group.find(params[:id])
+
+    if current_user.is_member_of?(@group)
+      current_user.quit!(@group)
+      flash[:alert] ="Already quit"
+    else
+      flash[:warning]="You are not belong to this group, how to quit?"
+    end
+
+redirect_to group_path(@group)
+end
+
   private
   def find_group_and_check_permission
     @group = Group.find(params[:id])
